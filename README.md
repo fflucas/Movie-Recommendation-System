@@ -1,4 +1,4 @@
-### Sistema de recomendação de filmes
+## Sistema de recomendação de filmes
 
 Este projeto implementa um sistema de recomendação de filmes com abordagem _collaborative filtering_ aplicando o algoritmo kNN.
 
