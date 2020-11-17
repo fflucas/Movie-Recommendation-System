@@ -4,4 +4,4 @@ Este projeto implementa um sistema de recomendação de filmes com abordagem _co
 
 A base de dados utilizada é disponibilizada pelo MovieLens.
 
-Antes de executar é necessário executar as dependências do arquivo `pom.xlm` com o Maven.
+Antes de executar é necessário executar as dependências do arquivo `pom.xlm` com o Maven para instalar as bibliotecas.
