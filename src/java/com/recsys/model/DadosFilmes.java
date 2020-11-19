@@ -44,15 +44,22 @@ public class DadosFilmes {
         return notaMedia.get();
     }
 
-    public SimpleIntegerProperty filmeIdProperty() {
-        return filmeId;
-    }
-
     public void setTotalVotos(int totalVotos) {
         this.totalVotos.set(totalVotos);
     }
 
     public void setNotaMedia(float notaMedia) {
         this.notaMedia.set(notaMedia);
+    }
+
+    @Override
+    public String toString() {
+        return "DadosFilmes{" +
+                "filmeId=" + filmeId +
+                ", titulo=" + titulo +
+                ", genero=" + genero +
+                ", totalVotos=" + totalVotos +
+                ", notaMedia=" + notaMedia +
+                '}';
     }
 }
