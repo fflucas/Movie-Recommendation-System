@@ -13,15 +13,17 @@ import java.util.stream.Collectors;
 
 public class Recomendar {
 
-    ObservableList<DadosFilmes> list;
+    ObservableList<DadosFilmes> listGeral;
     ArrayList<DadosFilmes> listaDadosFilmes;
-    ArrayList<DadosNotas> listaDadosNotas;
-    ArrayList<DadosFilmesAvaliados> listaDadosFilmesAvaliados;
+    ArrayList<DadosNotas> listaDadosNotas = new ArrayList<>();
 
-    public void setListaDadosFilmesAvaliados(DadosFilmesAvaliados DadosFilmeAvaliado) {
-        if (this.listaDadosFilmesAvaliados == null)
-            this.listaDadosFilmesAvaliados = new ArrayList<>();
-        this.listaDadosFilmesAvaliados.add(DadosFilmeAvaliado);
+    public ObservableList<DadosFilmes> getListGeral() {
+        return listGeral;
+    }
+
+    //Adiciona o filme avaliado pelo usuario 0 (usuario local) a lista de notas
+    public void setListaDadosFilmesAvaliados(DadosNotas DadosFilmeAvaliado) {
+        this.listaDadosNotas.add(DadosFilmeAvaliado);
     }
 
     /*Metodo para calcular a distancia entre usuarios.
@@ -119,7 +121,6 @@ public class Recomendar {
         for (int i : usuariosSimilares){
             notasUsuariosSimilares.addAll(notasDoUsuario(i));
         }
-
         //para cada filme assistido pelos usuarios similares eu faço a media das notas
         Set<Integer> idFilmesUsuariosSimilares = notasUsuariosSimilares.stream().map(DadosNotas::getFilmeId).collect(Collectors.toSet());
         ArrayList<DadosFilmes> filmesRecomendados = new ArrayList<>();
@@ -160,7 +161,27 @@ public class Recomendar {
         constroiFilmes(ba.carregaFilmes());
         contTotalVotos();
         contNotaMedia();
-        return list = FXCollections.observableArrayList(listaDadosFilmes); //constroi os dados de filmes
+        return listGeral = FXCollections.observableArrayList(listaDadosFilmes); //constroi os dados de filmes
+    }
+
+    //retorna a lista de filmes avaliados do usuario local (userId=0) como ObservableList para adicionar ao tableView
+    public ObservableList<DadosFilmes> listaDadosUsuario(int userId){
+        //busca as avaliações do usuario userId
+        ArrayList<DadosNotas> notasUsuario = notasDoUsuario(userId);
+        DadosFilmes tempDadosFilmes;
+        ArrayList<DadosFilmes> filmesDoUsuario = new ArrayList<>();
+        //percorro cada nota procurando o filme avaliado,
+        // criando um novo objeto com a nota dada pelo usuario e adicionando a um novo ArrayList
+        for (DadosNotas notaUsuario : notasUsuario){
+            for (DadosFilmes filme : listaDadosFilmes){
+                if (filme.getFilmeId()==notaUsuario.getFilmeId()){
+                    tempDadosFilmes = new DadosFilmes(filme.getFilmeId(), filme.getTitulo(), filme.getGenero(),
+                            1, notaUsuario.getNota());
+                    filmesDoUsuario.add(tempDadosFilmes);
+                }
+            }
+        }
+        return FXCollections.observableList(filmesDoUsuario);
     }
 
     /* Recebe os dados de filmes como string, converte para JSON
