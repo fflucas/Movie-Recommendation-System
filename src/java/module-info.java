@@ -6,6 +6,7 @@ module KnnApp {
     requires jackson.databind;
     requires jackson.dataformat.csv;
     requires java.desktop;
+    requires org.controlsfx.controls;
     opens com.recsys.controller to javafx.fxml;
     opens com.recsys.model to javafx.base;
     opens com.recsys;

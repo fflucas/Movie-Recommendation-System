@@ -6,13 +6,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -105,10 +107,28 @@ public class BuscaFilmesController implements Initializable{
                                 tabelaFilmesGeral.getSelectionModel().getSelectedItem().getGenero(),
                                 tabelaFilmesGeral.getSelectionModel().getSelectedItem().getTotalVotos(),
                                 tabelaFilmesGeral.getSelectionModel().getSelectedItem().getNotaMedia());
-                        //inicia o objeto para avaliar o filme, guarda o resultado na listaDadosNotas e atualiza a tabela de filmes do usuario
-                        AvaliaFilmeController afc = new AvaliaFilmeController();
-                        this.recsys.setListaDadosFilmesAvaliados(afc.avaliarFilme(filmeAvaliado, this.userId));
-                        tabelaFilmesUsuario.setItems(this.recsys.listaDadosUsuario(this.userId));
+                        /* Faz o load da tela e carrega o controlador.
+                        * Acessa o método preConstrutor do controlador para iniciar as legendas (labels)
+                        * Inicia a tela e aguarda o seu término (clique no botão Avaliar)
+                        * Como o recsys foi passado como associação de endereço a ação de atualizar a tabela de filmes assistidos
+                        * retorna o filme avaliado pelo usuário.
+                        */
+                        try {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/AvaliaFilmes.fxml"));
+                            Parent root1 = fxmlLoader.load();
+                            Stage stage = new Stage();
+                            stage.setTitle("Avalie o filme");
+                            Image appIcon = new Image( "/claquete.png");
+                            stage.getIcons().add(appIcon);
+                            stage.setScene(new Scene(root1));
+                            AvaliaFilmesController avaliaController = fxmlLoader.getController();
+                            avaliaController.preConstrutor(filmeAvaliado, this.userId, this.recsys);
+                            stage.showAndWait();
+                            tabelaFilmesUsuario.setItems(this.recsys.listaDadosUsuario(this.userId));
+                        } catch (Exception e) {
+                            System.out.println("Erro ao abrir a janela de avaliar! ERROR: " + e.getMessage());
+                            e.getStackTrace();
+                        }
                     }catch(Exception ex){
                         System.out.println(ex.getMessage());
                     }
@@ -148,7 +168,7 @@ public class BuscaFilmesController implements Initializable{
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image("/claquete.png"));
         alert.setTitle("Informações");
-        alert.setHeaderText("Sistema Desenvolvido por XX como projeto final da disciplina Programação Orientada a Objetos na UFCAT - 2020");
+        alert.setHeaderText("Sistema Desenvolvido por Fábio Almeida, Gabriel Arruda e Vitor Walter como projeto final da disciplina Programação Orientada a Objetos na UFCAT - 2020");
         alert.setContentText("Sistema de recomendação de filmes com uma abordagem Collaborative filtering que indica novos filmes baseado nos k usuários mais próximos de você.");
         alert.showAndWait();
     }
